@@ -2,11 +2,14 @@ using UnityEngine;
 
 public class RotateRod : MonoBehaviour
 {
-    public float rotationSpeed = 100f; // Speed of rotation
+    public float rotationSpeed = 100f;
 
     void Update()
     {
-        // Rotate the rod around the X-axis
-        transform.Rotate(Vector3.up* rotationSpeed * Time.deltaTime);
+        
+        Vector3 pivotPoint = transform.position - transform.right * (transform.localScale.x / 2);
+
+        
+        transform.RotateAround(pivotPoint, Vector3.up, rotationSpeed * Time.deltaTime);
     }
 }

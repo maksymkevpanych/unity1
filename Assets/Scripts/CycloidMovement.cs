@@ -21,7 +21,7 @@ public class CycloidMovement : MonoBehaviour
 
         transform.position = new Vector3(x, y, startPosition.z);
 
-        if (x >= startPosition.x + 15f)
+        if (x >= startPosition.x + 30f)
         {
             t = 0f;
         }
