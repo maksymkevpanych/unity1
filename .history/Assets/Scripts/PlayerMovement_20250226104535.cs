@@ -47,7 +47,6 @@ public class PlayerMovement : MonoBehaviour
         float z = Input.GetAxis("Vertical");
  
         Vector3 move = transform.right * x + transform.forward * z;
-        
 
         // Обробка спринту
         if (Input.GetKey(KeyCode.LeftShift) && sprintCooldownTimer <= 0 && sprintTimer < maxSprintDuration)
@@ -80,7 +79,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         controller.Move(move * currentSpeed * Time.deltaTime);
-        Debug.Log($"{currentSpeed}");
+ 
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);

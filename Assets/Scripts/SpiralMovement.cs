@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class SpiralMovement : MonoBehaviour
 {
-    public float a = 1f;  // Коефіцієнт, що визначає ріст спіралі
-    public float speed = 2f;  // Швидкість руху
-    private float t = 0f; // Часовий параметр
+    public float a = 1f;  
+    public float speed = 2f;  
+    private float t = 0f; 
     private Vector3 startPosition;
 
     void Start()
@@ -16,7 +16,7 @@ public class SpiralMovement : MonoBehaviour
     {
         t += speed * Time.deltaTime;
 
-        float r = a * t; // Радіус росте з часом
+        float r = a * t; 
         float x = r * Mathf.Cos(t) + startPosition.x;
         float z = r * Mathf.Sin(t) + startPosition.z;
 
