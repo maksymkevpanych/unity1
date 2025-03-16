@@ -4,10 +4,10 @@ using System.Collections;
 public class PlayerHealth : MonoBehaviour
 {
     public float health = 100f;
-    public float armour = 0.1f; // Reduces damage taken
-    public float damageReceived = 10f; // Base enemy attack damage
-    public float baseAttackTime = 1f; // Attack interval in seconds
-    private bool isTakingDamage = false; // Prevent multiple coroutines
+    public float armour = 0.1f;
+    public float damageReceived = 10f;
+    public float baseAttackTime = 1f;
+    private Coroutine damageCoroutine;
 
     private void Update()
     {
@@ -17,54 +17,69 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
+    public void RestoreHealth(int amount)
+    {
+        health = Mathf.Min(health + amount, 100f);
+        Debug.Log("Player healed! Current health: " + health);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Enemy") && !isTakingDamage) 
+        if (other.CompareTag("Enemy"))
         {
-            StartCoroutine(ApplyDamageOverTime());
+            EnemyHealth enemyHealth = other.GetComponent<EnemyHealth>();
+            if (enemyHealth != null && !enemyHealth.isDead)
+            {
+                if (damageCoroutine == null) 
+                {
+                    damageCoroutine = StartCoroutine(ApplyDamageOverTime(enemyHealth));
+                }
+            }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Enemy")) 
+        if (other.CompareTag("Enemy"))
         {
-            isTakingDamage = false;
-            StopCoroutine(ApplyDamageOverTime());
+            StopTakingDamage();
         }
     }
 
-    private IEnumerator ApplyDamageOverTime()
+    private IEnumerator ApplyDamageOverTime(EnemyHealth enemyHealth)
     {
-        isTakingDamage = true;
-        while (isTakingDamage)
+        while (enemyHealth != null && !enemyHealth.isDead)
         {
             CalculateDamage(damageReceived);
             yield return new WaitForSeconds(baseAttackTime);
+        }
+
+        // Stop taking damage if the enemy dies
+        StopTakingDamage();
+    }
+
+    private void StopTakingDamage()
+    {
+        if (damageCoroutine != null)
+        {
+            StopCoroutine(damageCoroutine);
+            damageCoroutine = null;
         }
     }
 
     public void CalculateDamage(float baseDamage)
     {
-        // Generate a random multiplier between 0.85 and 1.15
         float randomMultiplier = 1 + Random.Range(-0.15f, 0.15f);
-        
-        // Apply multiplier to the base damage
         float scaledDamage = baseDamage * randomMultiplier;
-
-        // Apply armor reduction
         float finalDamage = scaledDamage - (scaledDamage * armour);
-
-        // Reduce player's health
         health -= finalDamage;
 
-        Debug.Log($"Player took {finalDamage:F2} damage (Scaled: {scaledDamage:F2}, Multiplier: {randomMultiplier:F2}). Health remaining: {health:F2}");
+        Debug.Log($"Player took {finalDamage:F2} damage. Health remaining: {health:F2}");
     }
 
     private void Die()
     {
         Debug.Log("Player has died!");
-        // Handle player death (disable movement, show game over, etc.)
         Destroy(gameObject);
     }
 }
