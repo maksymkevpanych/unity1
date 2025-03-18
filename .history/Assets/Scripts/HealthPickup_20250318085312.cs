@@ -1,5 +1,6 @@
 using UnityEngine;
 
+u;
 
 public class HealthPickup : MonoBehaviour
 {

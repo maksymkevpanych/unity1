@@ -1,11 +1,12 @@
 using UnityEngine;
 
+using UnityEngine;
 
 public class HealthPickup : MonoBehaviour
 {
     public int healAmount = 10;
 
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
         Debug.Log("Trigger entered by: " + other.name); // Debugging
 
