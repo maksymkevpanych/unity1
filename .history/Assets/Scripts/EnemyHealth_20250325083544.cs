@@ -35,8 +35,8 @@ public class EnemyHealth : MonoBehaviour
         }
 
         // Оновлення глобальної статистики
-       
-        Debug.Log("Enemy Died! Score: ");
+        GlobalStorage.Instance.recordScore += 10;
+        Debug.Log("Enemy Died! Score: " + GlobalStorage.Instance.recordScore);
 
         Destroy(gameObject, 0.1f);
     }

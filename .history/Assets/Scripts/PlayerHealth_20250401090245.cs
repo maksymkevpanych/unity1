@@ -80,7 +80,7 @@ public class PlayerHealth : MonoBehaviour
     private void Die()
     {
         Debug.Log("Player has died!");
-        
+        GameObject.Set
         Destroy(gameObject);
         
     }   

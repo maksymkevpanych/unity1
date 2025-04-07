@@ -73,14 +73,13 @@ public class PlayerHealth : MonoBehaviour
         float finalDamage = scaledDamage - (scaledDamage * armour);
 
         GlobalStorage.Instance.lives -= finalDamage;
-        GlobalStorage.Instance.collisions++;
+        GlobalStorage.Instance.collisions++
         Debug.Log($"Player took {finalDamage:F2} damage. Health remaining: {GlobalStorage.Instance.lives:F2}");
     }
 
     private void Die()
     {
         Debug.Log("Player has died!");
-        
         Destroy(gameObject);
         
     }   
