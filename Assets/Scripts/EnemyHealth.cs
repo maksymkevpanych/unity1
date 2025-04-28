@@ -2,10 +2,14 @@ using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour
 {
+    Animator zombieAnim;
     public float health = 50f;
     public bool isDead = false;
     private Collider enemyCollider;
 
+    private void Awake(){
+        zombieAnim = GetComponent<Animator>();
+    }
     private void Start()
     {
         enemyCollider = GetComponent<Collider>();
@@ -24,6 +28,7 @@ public class EnemyHealth : MonoBehaviour
 
     private void Die()
     {
+        
         if (isDead) return; // Захист від повторного виклику
         isDead = true;
 
@@ -35,9 +40,13 @@ public class EnemyHealth : MonoBehaviour
         }
 
         // Оновлення глобальної статистики
-       
-        Debug.Log("Enemy Died! Score: ");
+        GetComponent<ZombieFollow>().enabled = false;
+        GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
 
-        Destroy(gameObject, 0.1f);
+        zombieAnim.SetBool("isFollowing",false);
+        zombieAnim.SetBool("isDead",true);
+        Debug.Log("Enemy Died! Score: ");
+        
+        Destroy(gameObject, 5f);
     }
 }

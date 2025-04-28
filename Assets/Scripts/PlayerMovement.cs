@@ -5,7 +5,8 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public CharacterController controller;
- 
+    private Animator animator;
+
     public float baseSpeed = 4f;
     public float maxSpeed = 12f;
     public float accelerationTime = 3f;
@@ -14,14 +15,14 @@ public class PlayerMovement : MonoBehaviour
 
     public float gravity = -9.81f * 2;
     public float jumpHeight = 3f;
- 
+
     public Transform groundCheck;
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
- 
+
     Vector3 velocity;
     bool isGrounded;
-    
+
     private bool isSprinting = false;
     private float sprintTimer = 0f;
     private float sprintCooldownTimer = 0f;
@@ -30,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+        animator = GetComponent<Animator>();
         currentSpeed = baseSpeed;
         accelerationRate = (maxSpeed - baseSpeed) / accelerationTime;
     }
@@ -37,7 +39,7 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
- 
+
         if (isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;
@@ -45,11 +47,10 @@ public class PlayerMovement : MonoBehaviour
 
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
- 
-        Vector3 move = transform.right * x + transform.forward * z;
-        
 
-        // Обробка спринту
+        Vector3 move = transform.right * x + transform.forward * z;
+
+        // Sprint logic
         if (Input.GetKey(KeyCode.LeftShift) && sprintCooldownTimer <= 0 && sprintTimer < maxSprintDuration)
         {
             isSprinting = true;
@@ -80,13 +81,19 @@ public class PlayerMovement : MonoBehaviour
         }
 
         controller.Move(move * currentSpeed * Time.deltaTime);
-        
+
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
- 
+
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
+
+        // 🔁 Animator parameter updates
+        bool isMoving = move.magnitude > 0.1f;
+        animator.SetBool("isWalking", isMoving && !isSprinting);
+        animator.SetBool("isRunning", isMoving && isSprinting);
+        animator.SetBool("isJumping", !isGrounded);
     }
 }
